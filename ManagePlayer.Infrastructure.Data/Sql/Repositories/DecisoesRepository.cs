@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ManagePlayer.Infrastructure.Data.Sql.Repositories
 {
@@ -19,22 +20,47 @@ namespace ManagePlayer.Infrastructure.Data.Sql.Repositories
             _conn = new SqlConnection(connString);
         }
 
-        public bool AddQuestion(DecisoesDto questao)
+        public async Task<bool> AddQuestionAsync(DecisoesDto questao)
         {
             string sql = @"INSERT INTO Decisoes 
                          (Nome, Descricao, OpcaoPositiva, RespostaPositiva, OpcaoNegativa, RespostaNegativa, Status)
-                         Values(@Nome, @Descricao, @OpcaoPositiva, @RespostaPositiva, @OpcaoNegativa, @RespostaNegativa, @Status);";
+                         Values(@Nome, @Descricao, @OpcaoPositiva, @RespostaPositiva, @OpcaoNegativa, @RespostaNegativa, @Status)";
 
             _conn.Open();
-            _conn.Execute(sql,questao);
+            await _conn.ExecuteAsync(
+                sql: sql,
+                param: new
+                {
+                    Nome = questao.Nome,
+                    Descricao = questao.Descricao,
+                    OpcaoPositiva = questao.OpcaoPositiva,
+                    RespostaPositiva = questao.RespostaPositiva,
+                    OpcaoNegativa = questao.OpcaoNegativa,
+                    RespostaNegativa = questao.RespostaNegativa,
+                    Status= questao.Status
+                }
+            );
             _conn.Close();
             
             return true;
         }
 
-        public IList<DecisoesDto> GetQuestions()
+        public IEnumerable<DecisoesDto> GetQuestions()
         {
-            return new List<DecisoesDto>();
+            string sql = @"SELECT Nome
+                                 ,Descricao
+                                 ,OpcaoPositiva
+                                 ,RespostaPositiva
+                                 ,OpcaoNegativa
+                                 ,RespostaNegativa
+                                 ,Status
+                           FROM Decisoes";
+
+            _conn.Open();
+            var query = _conn.Query<DecisoesDto>(sql);
+            _conn.Close();
+
+            return query;
         }
     }
 }

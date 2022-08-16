@@ -3,9 +3,11 @@ using ManagePlayer.Domain.Dto;
 using ManagePlayer.Domain.Entities;
 using ManagePlayer.Domain.Interfaces.Repositories;
 using ManagePlayer.Domain.Interfaces.Service;
+using ManagePlayer.Domain.MapperProfiles;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ManagePlayer.Domain.Service
 {
@@ -14,22 +16,25 @@ namespace ManagePlayer.Domain.Service
         public IDecisoesRepository _decisoesRepository;
         private readonly IMapper _mapper;
 
-        DecisoesService(
-            IDecisoesRepository decisoesRepository,
-            IMapper mapper
+        public DecisoesService(
+            IDecisoesRepository decisoesRepository
         )
         {
             _decisoesRepository = decisoesRepository;
-            _mapper = mapper;
+            var config = new MapperConfiguration(cfg => {
+                cfg.AddProfile<DecisoesProfile>();
+                cfg.CreateMap<DecisoesDto, Question>();
+            });
+            _mapper = config.CreateMapper();
         }
 
-        public bool AddQuestions(IEnumerable<DecisoesDto> decisoesDto)
+        public async Task<bool> AddQuestionsAsync(IEnumerable<Question> decisoesDto)
         {
             try 
             {
                 foreach(var decisao in decisoesDto)
                 {
-                    _decisoesRepository.AddQuestion(decisao);
+                    await _decisoesRepository.AddQuestionAsync(_mapper.Map<DecisoesDto>(decisao));
                 }
                 return true;
             }
@@ -52,7 +57,7 @@ namespace ManagePlayer.Domain.Service
                 }
                 return questions;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 return null;
             }

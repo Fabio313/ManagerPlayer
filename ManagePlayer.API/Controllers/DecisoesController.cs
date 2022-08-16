@@ -34,9 +34,9 @@ namespace ManagePlayer.API.Controllers
 
         // POST api/<DecisoesController>
         [HttpPost]
-        public void Post([FromBody] IEnumerable<DecisoesDto> decisoes)
+        public void Post(IEnumerable<Question> decisoes)
         {
-            _decisoesService.AddQuestions(decisoes);
+            _decisoesService.AddQuestionsAsync(decisoes);
         }
 
     }

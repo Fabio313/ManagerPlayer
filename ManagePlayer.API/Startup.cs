@@ -1,3 +1,8 @@
+using ManagePlayer.API.Controllers;
+using ManagePlayer.Domain.Interfaces.Repositories;
+using ManagePlayer.Domain.Interfaces.Service;
+using ManagePlayer.Domain.Service;
+using ManagePlayer.Infrastructure.Data.Sql.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,10 +11,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SimpleInjector;
+using SimpleInjector.Integration.Web.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace ManagePlayer.API
 {
@@ -34,6 +42,9 @@ namespace ManagePlayer.API
                 });
             });
             services.AddControllers();
+
+            services.AddTransient<IDecisoesRepository, DecisoesRepository>();
+            services.AddSingleton<IDecisoesService, DecisoesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

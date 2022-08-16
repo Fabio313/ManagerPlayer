@@ -3,12 +3,13 @@ using ManagePlayer.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ManagePlayer.Domain.Interfaces.Repositories
 {
     public interface IDecisoesRepository
     {
-        IList<DecisoesDto> GetQuestions();
-        bool AddQuestion(DecisoesDto questao);
+        IEnumerable<DecisoesDto> GetQuestions();
+        Task<bool> AddQuestionAsync(DecisoesDto questao);
     }
 }
