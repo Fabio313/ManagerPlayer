@@ -7,7 +7,7 @@ namespace ManagePlayer.Domain.Dto
 {
     public class DecisoesDto
     {
-        [JsonPropertyName("Nome")]
+        [JsonPropertyName("Nome")] 
         public string Nome { get; set; }
 
         [JsonPropertyName("Descricao")]
